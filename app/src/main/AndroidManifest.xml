@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codeb1ooded.digifest">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
@@ -20,6 +21,7 @@
         <activity android:name=".AttachImage"></activity>
         <activity android:name=".InputDetailsForm"></activity>
         <activity android:name=".RecordsActivity"></activity>
+        <activity android:name=".RecordDetailsActivity"></activity>
     </application>
 
 </manifest>

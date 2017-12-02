@@ -1,5 +1,9 @@
 package com.codeb1ooded.digifest.networking;
 
+import com.codeb1ooded.digifest.BlockData;
+import com.codeb1ooded.digifest.EmptyClass;
+import com.codeb1ooded.digifest.RecordModel;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -9,8 +13,13 @@ import retrofit2.http.Query;
  */
 
 public interface ApiInterface {
-    /*
-    @GET(".")
-    Call<Search> getMySearch(@Query("apikey") String apiKey, @Query("s") String item);
-    */
+
+    @GET("sfg/home")
+    Call<EmptyClass> addBlock(@Query("user") String username, @Query("title") String title, @Query("name") String name,
+                              @Query("age") int age, @Query("sex") String sex, @Query("others") String others,
+                              @Query("image") String image);
+
+    @GET("get_details")
+    Call<RecordModel> getDetails(@Query("username") String username);
+
 }

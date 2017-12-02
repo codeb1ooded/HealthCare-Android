@@ -1,6 +1,7 @@
 package com.codeb1ooded.digifest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,7 +29,7 @@ public class RecordsAdapter extends ArrayAdapter<BlockData> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null){
             convertView = View.inflate(context, R.layout.list_item, null);
             RecordsViewHolder vh = new RecordsViewHolder();
@@ -40,7 +41,9 @@ public class RecordsAdapter extends ArrayAdapter<BlockData> {
         vh.titleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, RecordDetailsActivity.class);
+                intent.putExtra("BlockData", myItems.get(position));
+                context.startActivity(intent);
             }
         });
         return convertView;

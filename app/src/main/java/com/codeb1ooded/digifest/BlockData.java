@@ -1,18 +1,19 @@
 package com.codeb1ooded.digifest;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by megha on 03/12/17.
  */
 
-public class BlockData {
+public class BlockData implements Serializable {
     String title;
     String name;
     int age;
     String sex;
     String others;
-    ArrayList<String> images;
+    String image;
 
     public String getTitle() {
         return title;
@@ -54,11 +55,11 @@ public class BlockData {
         this.others = others;
     }
 
-    public ArrayList<String> getImages() {
-        return images;
+    public String getImage() {
+        return image;
     }
 
-    public void setImages(ArrayList<String> images) {
-        this.images = images;
+    public void setImages(String image) {
+        this.image = image;
     }
 }

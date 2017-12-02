@@ -1,5 +1,6 @@
 package com.codeb1ooded.digifest;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,9 +18,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.codeb1ooded.digifest.networking.ApiService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by megha on 02/12/17.
@@ -27,17 +35,21 @@ import java.io.File;
 
 public class InputDetailsForm extends AppCompatActivity {
 
-    EditText patientNameEditText, patientAgeEditText, patientSexEditText, othersEditText;
-    ListView attachedImages;
+    EditText titleEditText, patientNameEditText, patientAgeEditText, patientSexEditText, othersEditText;
+    ImageView attachedImage;
     Button submit, upload;
-    ImageView im;
     int TAKE_PHOTO_CODE = 0;
+    Call<EmptyClass> call;
+    String imageInString;
+    ProgressDialog progressDialog;
+    int age;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.input_data);
 
+        titleEditText = (EditText) findViewById(R.id.title);
         patientNameEditText = (EditText) findViewById(R.id.name);
         patientAgeEditText = (EditText) findViewById(R.id.age);
         patientSexEditText = (EditText) findViewById(R.id.sex);
@@ -46,19 +58,7 @@ public class InputDetailsForm extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submit);
         upload = (Button) findViewById(R.id.upload);
 
-        im = (ImageView) findViewById(R.id.image);
-
-        attachedImages = (ListView) findViewById(R.id.attached_items_list_view);
-        attachedImages.setOnTouchListener(new View.OnTouchListener() {
-            // Setting on Touch Listener for handling the touch inside ScrollView
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
-        setListViewHeightBasedOnChildren(attachedImages);
+        attachedImage = (ImageView) findViewById(R.id.image_report);
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +71,33 @@ public class InputDetailsForm extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: network call
+                progressDialog = new ProgressDialog(InputDetailsForm.this);
+                progressDialog.setMessage("Loading...");
+
+                if(!patientAgeEditText.getText().toString().equals("") && patientAgeEditText.getText().toString() != null)
+                    age = Integer.parseInt(patientAgeEditText.getText().toString());
+
+                call = ApiService.getInterface().addBlock(
+                        getSharedPreferences("Digifest", MODE_PRIVATE).getString("USERNAME", null),
+                        titleEditText.getText().toString(),
+                        patientNameEditText.getText().toString(),
+                        age,
+                        patientSexEditText.getText().toString(),
+                        othersEditText.getText().toString(),
+                        imageInString);
+                call.enqueue(new Callback<EmptyClass>() {
+                    @Override
+                    public void onResponse(Call<EmptyClass> call, Response<EmptyClass> response) {
+                        progressDialog.cancel();
+                    }
+
+                    @Override
+                    public void onFailure(Call<EmptyClass> call, Throwable t) {
+                        progressDialog.cancel();
+                        Toast.makeText(InputDetailsForm.this, "You are not connected to internet", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
     }
@@ -81,32 +107,12 @@ public class InputDetailsForm extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             Log.d("Input_Details", data.getStringExtra("PICTURE_PATH"));
-            String imageInString = getStringFromBitmap(createBitmap(data.getStringExtra("PICTURE_PATH")));
+            imageInString = getStringFromBitmap(createBitmap(data.getStringExtra("PICTURE_PATH")));
             Log.e("ImageString", imageInString);
             Bitmap bitmap = getBitmapFromString(imageInString);
-            im.setImageBitmap(bitmap);
+            attachedImage.setVisibility(View.VISIBLE);
+            attachedImage.setImageBitmap(bitmap);
         }
-    }
-
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ActionBar.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
     }
 
     private Bitmap createBitmap(String pathname){
