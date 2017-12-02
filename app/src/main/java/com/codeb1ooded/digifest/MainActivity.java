@@ -31,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(username.getText().equals("username")){
+                if(username.getText().toString().equals("username")){
                     editor.putBoolean("LOGGED_IN", true);
                     editor.putString("USERNAME", username.getText().toString());
                     editor.commit();
+                    Intent intent = new Intent(MainActivity.this, RecordsActivity.class);
+                    startActivity(intent);
                 }
                 else{
                     Toast.makeText(MainActivity.this, "Invalid Login", Toast.LENGTH_SHORT).show();

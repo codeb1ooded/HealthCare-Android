@@ -24,27 +24,19 @@ public class ItemsAdapter extends ArrayAdapter<String> {
     }
 
     static class ViewHolder{
-
+        TextView titleTextView;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        /*
         if(convertView == null){
-            convertView = View.inflate(context, R.layout.stock_single_item_layout, null);
+            convertView = View.inflate(context, R.layout.list_item, null);
             ViewHolder vh = new ViewHolder();
-            vh.companyNameTextView = (TextView) convertView.findViewById(R.id.companyNameFromListFragment);
-            vh.percentageChangeTextView = (TextView) convertView.findViewById(R.id.percentageChangeFromListFragment);
-            vh.priceTextView = (TextView) convertView.findViewById(R.id.currentPriceFromListFragment);
+            vh.titleTextView = convertView.findViewById(R.id.title_text_view);
             convertView.setTag(vh);
         }
-        Stocks currentStock = myStocks.get(position);
         ViewHolder vh = (ViewHolder) convertView.getTag();
-        vh.companyNameTextView.setText(currentStock.getCompanyName());
-        vh.priceTextView.setText(currentStock.getCurrentPrice()+"");
-        vh.percentageChangeTextView.setText((currentStock.getPercentChange()+""));
+        vh.titleTextView.setText(myItems.get(position));
         return convertView;
-         */
-        return null;
     }
 }
