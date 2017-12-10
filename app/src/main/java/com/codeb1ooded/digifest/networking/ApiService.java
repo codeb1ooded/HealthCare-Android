@@ -19,7 +19,7 @@ public class ApiService {
             Gson gson = new GsonBuilder().create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://www.omdbapi.com/")
+                    .baseUrl("https://api.cohabitation95.hasura-app.io")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 

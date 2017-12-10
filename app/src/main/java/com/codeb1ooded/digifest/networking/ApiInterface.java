@@ -3,9 +3,12 @@ package com.codeb1ooded.digifest.networking;
 import com.codeb1ooded.digifest.BlockData;
 import com.codeb1ooded.digifest.EmptyClass;
 import com.codeb1ooded.digifest.RecordModel;
+import com.google.gson.JsonObject;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -14,12 +17,10 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("sfg/home")
-    Call<EmptyClass> addBlock(@Query("user") String username, @Query("title") String title, @Query("name") String name,
-                              @Query("age") int age, @Query("sex") String sex, @Query("others") String others,
-                              @Query("image") String image);
+    @POST("/sfg/home/")
+    Call<EmptyClass> addBlock(@Body JsonObject jsonObject);
 
-    @GET("get_details")
+    @GET("/get_details")
     Call<RecordModel> getDetails(@Query("username") String username);
 
 }

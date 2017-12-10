@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.codeb1ooded.digifest.networking.ApiService;
+import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -77,24 +78,28 @@ public class InputDetailsForm extends AppCompatActivity {
                 if(!patientAgeEditText.getText().toString().equals("") && patientAgeEditText.getText().toString() != null)
                     age = Integer.parseInt(patientAgeEditText.getText().toString());
 
-                call = ApiService.getInterface().addBlock(
-                        getSharedPreferences("Digifest", MODE_PRIVATE).getString("USERNAME", null),
-                        titleEditText.getText().toString(),
-                        patientNameEditText.getText().toString(),
-                        age,
-                        patientSexEditText.getText().toString(),
-                        othersEditText.getText().toString(),
-                        imageInString);
+                JsonObject postParam = new JsonObject();
+                postParam.addProperty("user", getSharedPreferences("Digifest", MODE_PRIVATE).getString("USERNAME", null)) ;
+                postParam.addProperty("title", titleEditText.getText().toString()) ;
+                postParam.addProperty("name", patientNameEditText.getText().toString()) ;
+                postParam.addProperty("age", age) ;
+                postParam.addProperty("sex", patientSexEditText.getText().toString()) ;
+                postParam.addProperty("others", othersEditText.getText().toString()) ;
+                postParam.addProperty("image", imageInString) ;
+
+                call = ApiService.getInterface().addBlock(postParam);
                 call.enqueue(new Callback<EmptyClass>() {
                     @Override
                     public void onResponse(Call<EmptyClass> call, Response<EmptyClass> response) {
                         progressDialog.cancel();
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<EmptyClass> call, Throwable t) {
                         progressDialog.cancel();
                         Toast.makeText(InputDetailsForm.this, "You are not connected to internet", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
 

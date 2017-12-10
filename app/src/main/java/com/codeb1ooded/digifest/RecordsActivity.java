@@ -39,6 +39,18 @@ public class RecordsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_records);
         recordsListView = (ListView) findViewById(R.id.records_list_view);
         datalist = new ArrayList<>();
+        BlockData data = new BlockData();
+        data.setTitle("Cancer Reports");
+        datalist.add(data);
+        data = new BlockData();
+        data.setTitle("Diabetese Reports");
+        datalist.add(data);
+        data = new BlockData();
+        data.setTitle("Parkinson Reports");
+        datalist.add(data);
+        data = new BlockData();
+        data.setTitle("Cancer Reports Recent");
+        datalist.add(data);
         adapter = new RecordsAdapter(RecordsActivity.this, datalist);
         recordsListView.setAdapter(adapter);
 
